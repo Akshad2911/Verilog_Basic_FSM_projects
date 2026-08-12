@@ -47,19 +47,17 @@ The Mealy FSM demonstrates a finite state machine in which the **output depends 
 
 ### Simulated Output
 
-The simulation verifies that the FSM changes states according to the applied input sequence and produces the expected output for each state-input combination.
+|  Time | Reset |  In | State | Output |
+| ----: | :---: | :-: | :---: | :----: |
+|     0 |   1   |  0  |   0   |    0   |
+| 10000 |   0   |  0  |   0   |    0   |
+| 20000 |   0   |  1  |   0   |    0   |
+| 45000 |   0   |  1  |   1   |    1   |
+| 60000 |   0   |  0  |   1   |    1   |
+| 65000 |   0   |  0  |   0   |    0   |
+| 70000 |   0   |  1  |   0   |    0   |
+| 90000 |   0   |  0  |   0   |    0   |
 
-Example:
-
-```text
-Time    Input    State    Output
---------------------------------
-0 ns      0       S0        0
-10 ns     1       S1        0
-20 ns     1       S2        1
-30 ns     0       S0        0
-40 ns     1       S1        0
-```
 
 ---
 
@@ -84,17 +82,22 @@ The Moore FSM demonstrates a finite state machine where the **output depends onl
 
 ### Simulated Output
 
-```text
-Time    Input    State    Output
---------------------------------
-0 ns      0       S0        0
-10 ns     1       S1        0
-20 ns     1       S2        1
-30 ns     0       S0        0
-40 ns     1       S1        0
-```
+|  Time | State_Input | Output |
+| ----: | :---------: | :----: |
+|     0 |      0      |    0   |
+| 10000 |      1      |    0   |
+| 20000 |      0      |    0   |
+| 30000 |      1      |    0   |
+| 35000 |      1      |    1   |
+| 45000 |      1      |    0   |
+| 50000 |      0      |    0   |
+| 60000 |      1      |    0   |
+| 65000 |      1      |    1   |
+| 70000 |      0      |    0   |
+| 80000 |      1      |    0   |
+| 85000 |      1      |    1   |
+| 95000 |      1      |    0   |
 
-The simulation confirms that the output changes according to the active state rather than directly according to the input.
 
 ---
 
@@ -123,30 +126,17 @@ IDLE → LOAD → CLK_HIGH → CLK_LOW → DONE
 
 ### Simulated Output
 
-A typical simulation demonstrates the sequence:
+| Parameter   | Value      |
+| ----------- | ---------- |
+| **TX DATA** | `10101010` |
+| **RX DATA** | `11001100` |
+| **MOSI**    | `0`        |
+| **MISO**    | `0`        |
+| **CS**      | `1`        |
+| **SCLK**    | `0`        |
+| **BUSY**    | `0`        |
+| **DONE**    | `1`        |
 
-```text
-State       Operation
-----------------------------
-IDLE        Waiting for start
-LOAD        Load transmission data
-CLK_HIGH    Generate SPI clock HIGH
-CLK_LOW     Generate SPI clock LOW
-CLK_HIGH    Shift/transmit next bit
-CLK_LOW     Continue clock cycle
-DONE        Transmission completed
-IDLE        Return to idle
-```
-
-Example waveform behavior:
-
-```text
-START   : 0 → 1
-CS      : 1 → 0
-SCLK    : 0 → 1 → 0 → 1 → 0 ...
-MOSI    : Data bits transmitted serially
-DONE    : 0 → 1
-```
 
 ---
 
@@ -179,40 +169,21 @@ IDLE → START → DATA → STOP → IDLE
 
 ### Simulated Output
 
-For example, when a byte is transmitted:
+| State          |  TX | BUSY | Transition / Description                |
+| -------------- | --: | ---: | --------------------------------------- |
+| **IDLE**       | `1` |  `0` | Waiting for `tx_start`                  |
+| **START**      | `0` |  `1` | `tx_start` detected; transmit start bit |
+| **DATA BIT 0** | `0` |  `1` | Transmit data bit 0                     |
+| **DATA BIT 1** | `1` |  `1` | Transmit data bit 1                     |
+| **DATA BIT 2** | `0` |  `1` | Transmit data bit 2                     |
+| **DATA BIT 3** | `1` |  `1` | Transmit data bit 3                     |
+| **DATA BIT 4** | `0` |  `1` | Transmit data bit 4                     |
+| **DATA BIT 5** | `1` |  `1` | Transmit data bit 5                     |
+| **DATA BIT 6** | `0` |  `1` | Transmit data bit 6                     |
+| **DATA BIT 7** | `1` |  `1` | Transmit data bit 7                     |
+| **STOP**       | `1` |  `1` | Transmit stop bit                       |
+| **IDLE**       | `1` |  `0` | Transmission completed; return to idle  |
 
-```text
-State     Operation
---------------------------
-IDLE      Waiting for transmit request
-START     Transmit start bit
-DATA      Transmit data bits
-STOP      Transmit stop bit
-IDLE      Transmission completed
-```
-
-Example:
-
-```text
-TX Line:
-
-1 ─────┐
-       │
-0      └── START
-           │
-           ├─ D0
-           ├─ D1
-           ├─ D2
-           ├─ D3
-           ├─ D4
-           ├─ D5
-           ├─ D6
-           ├─ D7
-           │
-           └──────── STOP ───── 1
-```
-
-The simulation verifies that the data is transmitted sequentially according to the UART frame structure.
 
 ---
 
@@ -250,19 +221,15 @@ IDLE
 
 ### Simulated Output
 
-Example simulation:
-
-```text
-Time    Coin/Input    State       Dispense
-------------------------------------------
-0 ns       0          IDLE           0
-10 ns      1          COIN_1         0
-20 ns      1          COIN_2         0
-30 ns      1          DISPENSE       1
-40 ns      0          IDLE           0
-```
-
-The simulation demonstrates that the product is dispensed when the required payment condition is satisfied.
+| Current State | Coin Inserted | Next State | Dispense |
+| ------------- | ------------- | ---------- | -------- |
+| S0 (₹0)       | ₹5            | S5         | No       |
+| S0 (₹0)       | ₹10           | S10        | No       |
+| S5 (₹5)       | ₹5            | S10        | No       |
+| S5 (₹5)       | ₹10           | S15        | Yes      |
+| S10 (₹10)     | ₹5            | S15        | Yes      |
+| S10 (₹10)     | ₹10           | S15        | Yes      |
+| S15           | Any           | S0         | No       |
 
 ---
 
@@ -302,19 +269,15 @@ IDLE
 
 ### Simulated Output
 
-```text
-Time    State      Operation
---------------------------------
-0 ns    IDLE       Machine waiting
-10 ns   FILL       Water filling
-20 ns   WASH       Washing clothes
-30 ns   RINSE      Rinsing
-40 ns   SPIN       Spinning
-50 ns   DONE       Cycle completed
-60 ns   IDLE       Machine ready
-```
-
-The simulation confirms that the washing process follows the predefined sequence of operations.
+| Clock | State | Water | Wash | Drain | Spin | Done |
+| ----: | ----- | ----: | ---: | ----: | ---: | ---: |
+|     1 | IDLE  |     0 |    0 |     0 |    0 |    0 |
+|     2 | FILL  |     1 |    0 |     0 |    0 |    0 |
+|     3 | WASH  |     0 |    1 |     0 |    0 |    0 |
+|     4 | DRAIN |     0 |    0 |     1 |    0 |    0 |
+|     5 | SPIN  |     0 |    0 |     0 |    1 |    0 |
+|     6 | DONE  |     0 |    0 |     0 |    0 |    1 |
+|     7 | IDLE  |     0 |    0 |     0 |    0 |    0 |
 
 ---
 
