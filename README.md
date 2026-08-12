@@ -1,4 +1,4 @@
-# Verilog_Basic_FSM_design
+# Verilog_Basic_FSM_projects
 
 A collection of **Finite State Machine (FSM) based digital design projects implemented in Verilog HDL**. This repository demonstrates the design and simulation of different **Mealy and Moore FSMs**, along with practical controller and communication-system applications such as SPI, UART, vending machines, and washing machines.
 
