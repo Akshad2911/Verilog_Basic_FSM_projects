@@ -281,6 +281,51 @@ IDLE
 
 ---
 
+## 7. ATM Controller FSM
+
+**File:** `ATM_Controller.v`
+
+The ATM Controller FSM demonstrates a finite state machine designed to control the sequence of operations in an **Automated Teller Machine (ATM)**, including card insertion, PIN verification, transaction selection, cash withdrawal, and card ejection.
+
+### Key Concepts
+
+- State register
+- Next-state logic
+- Card insertion and ejection
+- PIN verification
+- Transaction selection
+- Withdrawal control
+- Balance inquiry
+- FSM-based transaction sequencing
+
+### Features
+
+- Automated ATM transaction control
+- PIN verification sequence
+- Withdrawal operation
+- Balance checking
+- Card insertion and ejection
+- Transaction completion control
+- Reset and idle-state handling
+
+### State Sequence
+
+| State | Operation |
+|---|---|
+| **IDLE** | Waiting for card insertion |
+| **CARD_INSERTED** | Card detected |
+| **PIN_ENTRY** | Waiting for PIN |
+| **PIN_VERIFY** | Verifying PIN |
+| **MENU** | Selecting transaction |
+| **WITHDRAW** | Processing withdrawal |
+| **DEPOSIT** | Processing deposit |
+| **BALANCE** | Checking account balance |
+| **TRANSACTION_DONE** | Transaction completed |
+| **EJECT_CARD** | Ejecting card |
+| **IDLE** | Ready for next transaction |
+
+### Simulated Output
+
 # ⚙️ Features
 
 * Verilog HDL-based RTL designs
